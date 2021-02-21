@@ -3,6 +3,7 @@ import './App.css';
 import { Box } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import useInterval from 'use-interval';
+import { NumberParam, useQueryParam } from 'use-query-params';
 
 import gradients from './gradients.json';
 // https://raw.githubusercontent.com/ghosh/uiGradients/master/gradients.json
@@ -18,14 +19,18 @@ function randomInt(max) {
 export default function App() {
   const [gradient, setGradient] = useState(gradients[0]);
   const [toggle, setToggle] = useState(true);
+  const [seconds] = useQueryParam('seconds', NumberParam);
 
   useEffect(() => {
     selectRandom();
   }, []);
 
-  useInterval(() => {
-    selectRandom();
-  }, 10000);
+  useInterval(
+    () => {
+      selectRandom();
+    },
+    seconds ? seconds * 1000 : 10000
+  );
 
   const selectRandom = () => {
     const g = randomElement(gradients);
