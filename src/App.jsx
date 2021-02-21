@@ -1,0 +1,74 @@
+import './App.css';
+
+import { Box } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import useInterval from 'use-interval';
+
+import gradients from './gradients.json';
+// https://raw.githubusercontent.com/ghosh/uiGradients/master/gradients.json
+
+function randomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
+function randomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
+
+export default function App() {
+  const [gradient, setGradient] = useState(gradients[0]);
+  const [toggle, setToggle] = useState(true);
+
+  useEffect(() => {
+    selectRandom();
+  }, []);
+
+  useInterval(() => {
+    selectRandom();
+  }, 10000);
+
+  const selectRandom = () => {
+    const g = randomElement(gradients);
+    setGradient({
+      name: g.name,
+      colors: g.colors,
+      gradient: `linear-gradient(${randomInt(360)}deg, ${g.colors.join(', ')})`
+    });
+  };
+
+  return (
+    <Box
+      minH="100vh"
+      minW="100vw"
+      bg={gradient?.gradient}
+      onClick={() => {
+        selectRandom();
+        setToggle(!toggle);
+      }}
+      userSelect="none"
+    >
+      <Box
+        pos="absolute"
+        bottom="8"
+        left="8"
+        zIndex="2"
+        fontWeight="700"
+        fontSize="4xl"
+        color="white"
+        textShadow="0 0 20px rgba(0,0,0,0.5), 0 1px 0 rgba(0,0,0,0.25)"
+        lineHeight="1.4"
+        letterSpacing="tight"
+      >
+        <Box>{gradient.name}</Box>
+        <Box
+          fontSize="sm"
+          fontWeight="500"
+          letterSpacing="normal"
+          textTransform="lowercase"
+        >
+          {gradient.colors.join(' to ')}
+        </Box>
+      </Box>
+    </Box>
+  );
+}
